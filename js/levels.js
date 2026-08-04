@@ -3,7 +3,7 @@
 // ============================================================
 const LEVEL_1_STAGES = [
   {
-    title: "Stage 1",
+    title: "L1: Stage 1",
     width: 1900,
     groundY: 550,
     spawn: { x: 80, y: 450 },
@@ -65,7 +65,7 @@ const LEVEL_1_STAGES = [
   },
 
   {
-    title: "Stage 2",
+    title: "L1: Stage 2",
     width: 1900,
     groundY: 550,
     spawn: { x: 80, y: 450 },
@@ -122,7 +122,7 @@ const LEVEL_1_STAGES = [
   },
 
   {
-    title: "Stage 3",
+    title: "L1: Stage 3",
     width: 1900,
     groundY: 550,
     spawn: { x: 80, y: 450 },
@@ -213,7 +213,7 @@ function birdOnTree(treeX, id) {
 
 const LEVEL_2_STAGES = [
   {
-    title: "Stage 1: A New Path",
+    title: "L2: Stage 1",
     width: 1900,
     groundY: LEVEL_2_GROUND_Y,
     spawn: { x: 80, y: 450 },
@@ -264,7 +264,7 @@ const LEVEL_2_STAGES = [
   },
 
   {
-    title: "Stage 2",
+    title: "L2: Stage 2",
     width: 1900,
     groundY: LEVEL_2_GROUND_Y,
     spawn: { x: 80, y: 450 },
@@ -302,7 +302,7 @@ const LEVEL_2_STAGES = [
   },
 
   {
-    title: "Stage 3",
+    title: "L2: Stage 3",
     width: 1900,
     groundY: LEVEL_2_GROUND_Y,
     spawn: { x: 80, y: 450 },
@@ -378,7 +378,7 @@ const LEVEL_2_STAGES = [
 // ============================================================
 const LEVEL_3_STAGES = [
   {
-    title: "Stage 1",
+    title: "L3: Stage 1",
     width: 2134,
     groundY: 550,
     spawn: { x: 80, y: 450 },
@@ -409,7 +409,7 @@ const LEVEL_3_STAGES = [
   },
 
   {
-    title: "Stage 2",
+    title: "L3: Stage 2",
     width: 2133,
     groundY: 550,
     spawn: { x: 80, y: 450 },
@@ -463,7 +463,7 @@ const LEVEL_3_STAGES = [
   },
 
   {
-    title: "Stage 3",
+    title: "L3: Stage 3",
     width: 2133,
     groundY: 550,
     spawn: { x: 80, y: 450 },
@@ -480,7 +480,7 @@ const LEVEL_3_STAGES = [
         width: 100,
         height: 14,
         range: 350,
-        speed: 105.5,
+        speed: 115,
         phase: 0,
       },
     ],

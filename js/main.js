@@ -33,7 +33,7 @@ let freezeTimer = 0;
 const BIRD_FREEZE_DURATION = 1.5;
 let noiseLevel = 0;
 const NOISE_MAX = 100;
-const NOISE_RATE_UP = 95;
+const NOISE_RATE_UP = 88;
 const NOISE_RATE_DOWN = 22;
 
 const LEVEL_EXTENTS = (() => {
@@ -56,13 +56,13 @@ const overlayBtn = document.getElementById("overlay-btn");
 const levelLabel = document.getElementById("level-label");
 const controlsHint = document.getElementById("controls-hint");
 const DEFAULT_CONTROLS_HINT =
-  "← → move &nbsp;|&nbsp; ↑ / Space jump &nbsp;|&nbsp; Esc menu";
+  "← → move &nbsp;|&nbsp; ↑ / Space jump &nbsp;|&nbsp; Esc menu &nbsp;|&nbsp; ` debug";
 const GRAVEL_CONTROLS_HINT =
-  "← → move &nbsp;|&nbsp; ↑ / Space jump &nbsp;|&nbsp; &nbsp;|&nbsp; Esc menu";
+  "← → move &nbsp;|&nbsp; ↑ / Space jump &nbsp;|&nbsp; &nbsp;|&nbsp; Esc menu &nbsp;|&nbsp; ` debug";
 const BARK_CONTROLS_HINT_QUIET =
-  "← → move &nbsp;|&nbsp; ↑ / Space jump &nbsp;|&nbsp; &nbsp;|&nbsp; Esc menu";
+  "← → move &nbsp;|&nbsp; ↑ / Space jump &nbsp;|&nbsp; &nbsp;|&nbsp; Esc menu &nbsp;|&nbsp; ` debug";
 const BARK_CONTROLS_HINT_INVERTED =
-  "BARKING — controls reversed! &nbsp;|&nbsp; ↑ / Space jump &nbsp;|&nbsp; Esc menu";
+  "BARKING — controls reversed! &nbsp;|&nbsp; ↑ / Space jump &nbsp;|&nbsp; Esc menu &nbsp;|&nbsp; ` debug";
 const BARK_WARN_LEAD = 0.6;
 const restartBtn = document.getElementById("restart-btn");
 const muteBtn = document.getElementById("mute-btn");
@@ -515,7 +515,14 @@ function getSectionIndexForX(x) {
     const s = WORLD.sections[i];
     if (x >= s.startX && x < s.endX) return i;
   }
-  return WORLD.sections.length - 1;
+  // x falls in a gap between levels (or off either end): snap to the
+  // nearest section behind it, so we stay in whichever level we came from
+  // instead of falling through to the last level in the list.
+  let best = 0;
+  for (let i = 0; i < WORLD.sections.length; i++) {
+    if (WORLD.sections[i].endX <= x) best = i;
+  }
+  return best;
 }
 
 function getCurrentSection() {
@@ -1555,7 +1562,7 @@ function buildDebugPanelDOM() {
       },
     ],
     [
-      "W: Win screen",
+      "O: Game over",
       () => {
         closeDebugPanel();
         hideLevelSelect();
@@ -1643,7 +1650,7 @@ window.addEventListener("keydown", (e) => {
 
   if (e.code === "ArrowLeft" || e.code === "KeyA") keys.left = true;
   if (e.code === "ArrowRight" || e.code === "KeyD") keys.right = true;
-  if (e.code === "ArrowUp" || e.code === "Space") {
+  if (e.code === "ArrowUp" || e.code === "Space" || e.code === "KeyW") {
     keys.up = true;
   }
   if (e.code === "KeyT") keys.t = true;
@@ -1660,7 +1667,7 @@ window.addEventListener("keydown", (e) => {
     closeDebugPanel();
     pauseOpenLevelSelect();
   }
-  if (e.code === "KeyW") {
+  if (e.code === "KeyO") {
     closeDebugPanel();
     hideLevelSelect();
     isPaused = false;
@@ -1685,7 +1692,7 @@ window.addEventListener("keydown", (e) => {
 window.addEventListener("keyup", (e) => {
   if (e.code === "ArrowLeft" || e.code === "KeyA") keys.left = false;
   if (e.code === "ArrowRight" || e.code === "KeyD") keys.right = false;
-  if (e.code === "ArrowUp" || e.code === "Space") {
+  if (e.code === "ArrowUp" || e.code === "Space" || e.code === "KeyW") {
     keys.up = false;
   }
   if (e.code === "KeyT") keys.t = false;
@@ -2099,14 +2106,28 @@ function update(dt) {
     }
   }
 
-  const curSectionIdx = getSectionIndexForX(player.x);
-  const curLevelIdx = WORLD.sections[curSectionIdx]
-    ? WORLD.sections[curSectionIdx].levelIndex
+  const prevLevelSectionIdx = getSectionIndexForX(prevX);
+  const curLevelIdx = WORLD.sections[prevLevelSectionIdx]
+    ? WORLD.sections[prevLevelSectionIdx].levelIndex
     : 0;
   const curExt = LEVEL_EXTENTS[curLevelIdx];
   const lo = curExt ? curExt.start : 0;
   const hi = curExt ? curExt.end - player.w : world.def.width - player.w;
-  player.x = Math.max(lo, Math.min(hi, player.x));
+
+  // Walking off the right edge of a level's last stage carries you into the
+  // next level's first stage; walking off the left edge of a level's first
+  // stage carries you back into the previous level's last stage.
+  const nextExt = curExt ? LEVEL_EXTENTS[curLevelIdx + 1] : null;
+  const prevExt = curExt ? LEVEL_EXTENTS[curLevelIdx - 1] : null;
+  if (curExt && player.x > hi && nextExt) {
+    player.x = nextExt.start + 24;
+    checkpoint = { x: player.x, y: player.y };
+  } else if (curExt && player.x < lo && prevExt) {
+    player.x = prevExt.end - player.w - 24;
+    checkpoint = { x: player.x, y: player.y };
+  } else {
+    player.x = Math.max(lo, Math.min(hi, player.x));
+  }
 
   player.y += player.vy * dt;
 
@@ -2311,16 +2332,6 @@ function activateCheckpoint(mb) {
 }
 
 function goToNextLevel(fromLevelIdx) {
-  for (let lvl = fromLevelIdx + 1; lvl < LEVEL_COUNT; lvl++) {
-    const firstSection = WORLD.sections.find(
-      (s) => s.levelIndex === lvl && s.stageIndex === 0,
-    );
-    if (firstSection) {
-      checkpoint = { x: firstSection.spawn.x, y: firstSection.spawn.y };
-      respawnPlayer();
-      return;
-    }
-  }
   showLevelSelect();
 }
 
