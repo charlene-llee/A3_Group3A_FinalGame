@@ -134,6 +134,25 @@ canvas {
   background-color: transparent;
 }
 
+/* End screen: FinalBG.png already has the "You made it!" art and copy
+   baked in, so hide the dynamic heading/text and just drop the Return To
+   Menu button into the grass/dirt band near the bottom of the art. */
+#overlay.end-bg {
+  background-image: url("../assets/images/FinalBG.png");
+  background-size: cover;
+  background-position: center;
+  background-color: transparent;
+}
+
+#overlay.end-bg #overlay-title,
+#overlay.end-bg #overlay-text {
+  display: none !important;
+}
+
+#overlay.end-bg #overlay-btn {
+  margin-top: clamp(140px, 84cqh, 640px);
+}
+
 #overlay-box {
   text-align: center;
   color: #f5e3b3;

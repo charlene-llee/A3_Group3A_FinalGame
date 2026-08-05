@@ -329,19 +329,10 @@ const LEVEL_2_STAGES = [
     movingPlatforms: [],
     groundHazards: [
       {
-        x: 900,
+        x: 1000,
         width: 79,
         height: 56,
-        range: 320,
-        speed: 120,
-        phase: 0,
-        sprite: "whitedog",
-      },
-      {
-        x: 1500,
-        width: 79,
-        height: 56,
-        range: 150,
+        range: 280,
         speed: 120,
         phase: 0,
         sprite: "whitedog",
@@ -384,7 +375,7 @@ const LEVEL_3_STAGES = [
     spawn: { x: 80, y: 450 },
     door: { x: 2004, width: 56, height: 90 },
     ground: [{ x: 0, width: 2134 }],
-    trapGround: [{ x: 1006, width: 96 }],
+    trapGround: [{ x: 980, width: 170 }],
     movingPlatforms: [],
     hazards: [],
     groundHazards: [

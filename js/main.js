@@ -529,9 +529,31 @@ function getCurrentSection() {
   return WORLD.sections[getSectionIndexForX(player.x)];
 }
 
+// Stages are stored as fixed-width chunks of the level, but the visual
+// "end" of a stage is really wherever its mailbox sits (often well before
+// the raw width cutoff). Base the displayed title on mailboxes passed so
+// it flips to the next stage as soon as the player walks past one,
+// matching what they see on screen instead of an invisible x cutoff.
+function getDisplayStageIndex(levelIdx, x) {
+  const mbs = world.mailboxes
+    .filter((m) => m.levelIndex === levelIdx)
+    .sort((a, b) => a.stageIndex - b.stageIndex);
+  for (const mb of mbs) {
+    if (x < mb.x) return mb.stageIndex;
+  }
+  return mbs.length ? mbs[mbs.length - 1].stageIndex : 0;
+}
+
 function updateLevelLabel() {
   const idx = getSectionIndexForX(player.x);
-  levelLabel.textContent = WORLD.sections[idx].title.split("—")[0].trim();
+  const section = WORLD.sections[idx];
+  const displayStageIdx = getDisplayStageIndex(section.levelIndex, player.x);
+  const labelSection =
+    WORLD.sections.find(
+      (s) =>
+        s.levelIndex === section.levelIndex && s.stageIndex === displayStageIdx,
+    ) || section;
+  levelLabel.textContent = labelSection.title.split("—")[0].trim();
 
   if (controlsHint) {
     const onGravel = getGroundSurfaceAt(player.x) === "gravel";
@@ -1245,7 +1267,7 @@ function isBarkWarningActive() {
 }
 
 function randomBirdInterval() {
-  return 3;
+  return 4.5;
 }
 
 const INITIAL_BIRD_CHIRP_DELAY = 0.4;
@@ -1300,6 +1322,16 @@ function getGroundSurfaceAt(x) {
   return null;
 }
 
+function currentSectionHasGravel() {
+  const section = getCurrentSection();
+  return world.def.ground.some(
+    (g) =>
+      g.surface === "gravel" &&
+      g.x < section.endX &&
+      g.x + g.width > section.startX,
+  );
+}
+
 function clampCamera(targetX) {
   const half = VIEW_W / 2;
   let cx = targetX - half;
@@ -1316,6 +1348,7 @@ function clampCamera(targetX) {
 }
 
 function setTitleBackground(active) {
+  overlay.classList.remove("end-bg");
   if (active) {
     overlay.classList.add("title-bg");
     overlayTitle.style.display = "none";
@@ -1338,6 +1371,7 @@ function showStartOverlay() {
 
 function showEndOverlay() {
   setTitleBackground(false);
+  overlay.classList.add("end-bg");
 
   overlayTitle.textContent = "You made it!";
   overlayText.textContent =
@@ -2176,7 +2210,11 @@ function update(dt) {
   } else {
     stopGravelFootsteps();
   }
-  if (standingSurface === "gravel" || noiseLevel > 0) {
+  if (!currentSectionHasGravel()) {
+    // Left the gravel stage entirely — kill the bar immediately instead of
+    // letting it linger and tick down while already in the next stage.
+    noiseLevel = 0;
+  } else if (standingSurface === "gravel" || noiseLevel > 0) {
     noiseLevel += (isNoisy ? NOISE_RATE_UP : -NOISE_RATE_DOWN) * dt;
     noiseLevel = Math.max(0, Math.min(NOISE_MAX, noiseLevel));
     if (noiseLevel >= NOISE_MAX) {
