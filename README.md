@@ -83,6 +83,8 @@ We added a small visual indicator in Level 3 to show when the jump boost has bee
 [4] Pixabay. n.d. Musical Music for Game Fun Kid Game. Sound effect. Retrieved July 7, 2026 from https://pixabay.com/sound-effects/musical-music-for-game-fun-kid-game-163649/
 
 [5] Pixabay. n.d. Film Special Effects Bell Sound. Sound effect. Retrieved July 7, 2026 from https://pixabay.com/sound-effects/film-special-effects-bell-sound-370341/
+
 [6] YouTube. n.d. Video. Retrieved August 6, 2026 from https://www.youtube.com/watch?v=ReozTbJielI
+
 [7] YouTube. n.d. Video. Retrieved August 6, 2026 from https://www.youtube.com/watch?v=hhz6AI45IQw
 
