@@ -1,4 +1,5 @@
 # TACTIC
+## A3 Final Game
 ## Group 3A
 
 ## Description
@@ -38,13 +39,12 @@ Note: This game saves your level progression and accomplishments in your browser
 ## Iteration Notes
 
 Post Play test:
-- Decreased the difficulty of level 1 stage 5 by reducing number of dogs that flash in.
-- Changed the mailboxes from portals to checkpoints, creating a continuous level instead of separate stages.
-- Changed the harzard boxes to dogs so players can better understand that the object is an obstacle.
+- Reorganized and restructured our game to improve the overall flow and progression.
+- Made sure previously introduced mechanics continued to appear in later levels. 
+- Removed lengthy instructions and unnecessary text, replacing them with minimal guidance and directions instead to allow players to learn through gameplay.
 
 Post Showcase:
-- We plan to edit level progression to be more graudual and intuitive by reducing the required mechanics within the early levels as some players have found the difficulty to have increased too quickly. We plan to also do this by not making them die by falling through the ground so easily, offering an alternative to climb back out if they fall down.
-- We also plan to update and align the hitboxes for graphics and visual indicators to make the experience more smooth and intuitive for players as some harzards weren't made clear enough.
+We added a small visual indicator in Level 3 to show when the jump boost has been acquired, similar to the bird chirping warning from the previous level. 
 
 ## Assets
 
@@ -82,3 +82,5 @@ Post Showcase:
 [4] Pixabay. n.d. Musical Music for Game Fun Kid Game. Sound effect. Retrieved July 7, 2026 from https://pixabay.com/sound-effects/musical-music-for-game-fun-kid-game-163649/
 
 [5] Pixabay. n.d. Film Special Effects Bell Sound. Sound effect. Retrieved July 7, 2026 from https://pixabay.com/sound-effects/film-special-effects-bell-sound-370341/
+
+
