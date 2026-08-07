@@ -2645,6 +2645,35 @@ function drawPlayer() {
     drawW,
     drawH,
   );
+
+  if (player.superJumpReady) {
+    const pulse = 0.5 + 0.5 * Math.sin(gameTime * 8);
+    drawBoostReadyIcon(drawX + drawW / 2, drawY - 16, pulse);
+  }
+}
+
+function drawBoostReadyIcon(x, y, alpha) {
+  ctx.save();
+  ctx.globalAlpha = alpha;
+  ctx.fillStyle = "#fff";
+  ctx.strokeStyle = "#000";
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.arc(x, y, 14, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.stroke();
+  ctx.fillStyle = "#1a1a1a";
+  ctx.beginPath();
+  ctx.moveTo(x, y - 7);
+  ctx.lineTo(x + 6, y + 3);
+  ctx.lineTo(x + 2.5, y + 3);
+  ctx.lineTo(x + 2.5, y + 8);
+  ctx.lineTo(x - 2.5, y + 8);
+  ctx.lineTo(x - 2.5, y + 3);
+  ctx.lineTo(x - 6, y + 3);
+  ctx.closePath();
+  ctx.fill();
+  ctx.restore();
 }
 
 function frame(timestamp) {
